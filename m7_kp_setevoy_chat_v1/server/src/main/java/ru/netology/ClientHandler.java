@@ -27,6 +27,9 @@ public class ClientHandler implements Runnable {
             // Проверка дубликата имени
             while (true) {
                 String name = reader.readLine();
+                if (name == null) {
+                    return;
+                }
                 if (chatServer.checkName(name)) {
                     outServer.println("Занято");
                 } else {
@@ -40,11 +43,24 @@ public class ClientHandler implements Runnable {
 
             while (true) {
                 // Получение от клиента
-                String[] in = reader.readLine().split("&");
+                String line = reader.readLine();
+                if (line == null) {
+                    return;
+                }
+
+                String[] in = line.split("&", 3);
+                if (in.length < 3) {
+                    continue;
+                }
+
+                if (in[2].isEmpty()) {
+                    continue;
+                }
+
                 String nowDateTime = in[0];
                 String msg = in[2];
 
-                if (msg == null || msg.equals("/exit")) {
+                if (msg.equals("/exit")) {
                     break;
                 }
 

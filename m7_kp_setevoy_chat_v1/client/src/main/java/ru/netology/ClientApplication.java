@@ -100,7 +100,7 @@ public class ClientApplication {
             constantReadingThread.join();
 
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            System.out.println("Не удалось подключиться к серверу " + host + ":" + port);
         }
     }
 

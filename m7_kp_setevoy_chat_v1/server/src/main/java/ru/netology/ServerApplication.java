@@ -10,7 +10,23 @@ public class ServerApplication {
         // Чтение файла настроек подключения сервера server/settings.txt
         TreeMap<String, String> settingsServer = new TreeMap<>();
         saveSettings(settingsServer, "server/settings.txt");
-        int port = Integer.parseInt(settingsServer.get("port"));
+
+        String portValue = settingsServer.get("port");
+
+        if (portValue == null || portValue.isBlank()) {
+            System.out.println("В настройках не указан порт");
+            return;
+        }
+
+        int port;
+
+        try {
+            port = Integer.parseInt(portValue);
+        } catch (NumberFormatException exception) {
+            System.out.println("Порт должен быть целым числом");
+            return;
+        }
+
         ChatServer chatServer = new ChatServer(port);
         chatServer.start();
     }
@@ -20,8 +36,10 @@ public class ServerApplication {
         try (BufferedReader reader = new BufferedReader(new FileReader(pathFile))) {
             String line;
             while ((line = reader.readLine()) != null) {
-                int iEqual = line.indexOf('=');
-                settings.put(line.substring(0, iEqual), line.substring(iEqual + 1));
+                if (line.contains("=")) {
+                    int iEqual = line.indexOf('=');
+                    settings.put(line.substring(0, iEqual), line.substring(iEqual + 1));
+                }
             }
         } catch (IOException exception) {
             System.out.println(exception.getMessage());
